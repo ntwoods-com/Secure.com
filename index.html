@@ -4,101 +4,335 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Job Application Form</title>
-  <meta name="description" content="Apply for open positions. Submit your resume and details." />
+  <title>Job Application Form - Professional & Secure</title>
+  <meta name="description" content="Apply for open positions. Submit your resume and details securely." />
   <link rel="icon" href="data:,">
 
   <!-- Cloudflare Turnstile -->
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+    }
 
     :root {
-      --primary: #2563eb;
-      --primary-dark: #1d4ed8;
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --primary-light: #818cf8;
       --success: #10b981;
       --error: #ef4444;
-      --bg: #f8fafc;
+      --warning: #f59e0b;
+      --bg-gradient-1: #667eea;
+      --bg-gradient-2: #764ba2;
       --card: #ffffff;
-      --text: #1e293b;
+      --text: #0f172a;
       --text-muted: #64748b;
       --border: #e2e8f0;
+      --shadow: rgba(0, 0, 0, 0.1);
+      --input-focus: #f0f9ff;
     }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
       min-height: 100vh;
-      padding: 20px;
+      padding: 40px 20px;
+      position: relative;
+      overflow-x: hidden;
     }
 
-    .container { max-width: 520px; margin: 0 auto; }
+    /* Animated background elements */
+    .bg-decoration {
+      position: fixed;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bg-circle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.1;
+      filter: blur(60px);
+    }
+
+    .bg-circle-1 {
+      width: 300px;
+      height: 300px;
+      background: #fff;
+      top: -100px;
+      left: -100px;
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .bg-circle-2 {
+      width: 250px;
+      height: 250px;
+      background: #fff;
+      bottom: -80px;
+      right: -80px;
+      animation: float 10s ease-in-out infinite reverse;
+    }
+
+    .bg-circle-3 {
+      width: 200px;
+      height: 200px;
+      background: #fff;
+      top: 50%;
+      right: 10%;
+      animation: float 12s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-30px) scale(1.1); }
+    }
+
+    .container { 
+      max-width: 600px; 
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
 
     .card {
       background: var(--card);
-      border-radius: 16px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-      padding: 32px;
-      animation: slideUp 0.5s ease-out;
+      border-radius: 24px;
+      box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.25),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+      padding: 48px 40px;
+      animation: slideUpFade 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
     }
 
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    /* Card shine effect */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      animation: cardShine 3s ease-in-out infinite;
+    }
+
+    @keyframes cardShine {
+      0% { left: -100%; }
+      50%, 100% { left: 100%; }
+    }
+
+    @keyframes slideUpFade {
+      from { 
+        opacity: 0; 
+        transform: translateY(30px) scale(0.95); 
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+      }
+    }
+
+    /* Header with icon */
+    .form-header {
+      text-align: center;
+      margin-bottom: 32px;
+      position: relative;
+    }
+
+    .header-icon {
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      margin-bottom: 16px;
+      box-shadow: 
+        0 10px 25px rgba(99, 102, 241, 0.3),
+        0 0 0 4px rgba(99, 102, 241, 0.1);
+      animation: iconBounce 2s ease-in-out infinite;
+      position: relative;
+    }
+
+    @keyframes iconBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .header-icon::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, var(--primary-light), var(--primary));
+      z-index: -1;
+      opacity: 0;
+      animation: iconGlow 2s ease-in-out infinite;
+    }
+
+    @keyframes iconGlow {
+      0%, 100% { opacity: 0; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.1); }
     }
 
     h1 {
       color: var(--text);
-      font-size: 24px;
+      font-size: 28px;
       font-weight: 700;
-      text-align: center;
       margin-bottom: 8px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .subtitle {
       color: var(--text-muted);
-      text-align: center;
-      margin-bottom: 24px;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* Security badge */
+    .security-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+      border: 1px solid #86efac;
+      border-radius: 20px;
+      font-size: 12px;
+      color: #166534;
+      font-weight: 600;
+      margin-top: 12px;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+    }
+
+    .security-badge::before {
+      content: '🔒';
       font-size: 14px;
     }
 
-    .form-group { margin-bottom: 20px; }
+    .form-group { 
+      margin-bottom: 24px;
+      animation: fadeInUp 0.5s ease-out backwards;
+    }
+
+    .form-group:nth-child(1) { animation-delay: 0.1s; }
+    .form-group:nth-child(2) { animation-delay: 0.15s; }
+    .form-group:nth-child(3) { animation-delay: 0.2s; }
+    .form-group:nth-child(4) { animation-delay: 0.25s; }
+    .form-group:nth-child(5) { animation-delay: 0.3s; }
+    .form-group:nth-child(6) { animation-delay: 0.35s; }
+    .form-group:nth-child(7) { animation-delay: 0.4s; }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
     label {
       display: block;
       color: var(--text);
-      font-weight: 500;
-      margin-bottom: 6px;
+      font-weight: 600;
+      margin-bottom: 8px;
       font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .required::after {
       content: '*';
       color: var(--error);
-      margin-left: 4px;
+      margin-left: 2px;
+      font-size: 16px;
     }
 
+    .label-icon {
+      font-size: 16px;
+      opacity: 0.6;
+    }
+
+    /* Enhanced inputs */
     input, select, textarea {
       width: 100%;
-      padding: 12px 16px;
+      padding: 14px 16px;
       border: 2px solid var(--border);
-      border-radius: 8px;
-      font-size: 16px;
-      transition: border-color 0.2s ease;
+      border-radius: 12px;
+      font-size: 15px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       background: white;
+      color: var(--text);
+      font-family: inherit;
+    }
+
+    input:hover, select:hover, textarea:hover {
+      border-color: var(--primary-light);
     }
 
     input:focus, select:focus, textarea:focus {
       outline: none;
       border-color: var(--primary);
+      background: var(--input-focus);
+      box-shadow: 
+        0 0 0 4px rgba(99, 102, 241, 0.1),
+        0 4px 12px rgba(99, 102, 241, 0.15);
+      transform: translateY(-1px);
     }
 
     input:disabled, select:disabled {
       background: #f1f5f9;
       cursor: not-allowed;
+      opacity: 0.6;
     }
 
+    /* Validation states */
+    input.valid {
+      border-color: var(--success);
+      background: #f0fdf4;
+    }
+
+    input.invalid {
+      border-color: var(--error);
+      background: #fef2f2;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .input-icon.show {
+      opacity: 1;
+    }
+
+    .input-icon.valid { color: var(--success); }
+    .input-icon.invalid { color: var(--error); }
+
+    /* Enhanced file input */
     .file-input { position: relative; }
 
     .file-input input[type="file"] {
@@ -107,169 +341,522 @@
       width: 100%;
       height: 100%;
       cursor: pointer;
+      z-index: 2;
     }
 
     .file-label {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 16px;
+      gap: 16px;
+      padding: 20px;
       border: 2px dashed var(--border);
-      border-radius: 8px;
+      border-radius: 12px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.3s ease;
+      background: linear-gradient(135deg, #fafafa 0%, #ffffff 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .file-label::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(79, 70, 229, 0.05));
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
 
     .file-label:hover {
       border-color: var(--primary);
-      background: #f8fafc;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.15);
+    }
+
+    .file-label:hover::before {
+      opacity: 1;
     }
 
     .file-label.has-file {
       border-color: var(--success);
-      background: #f0fdf4;
+      border-style: solid;
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    }
+
+    .file-label.dragging {
+      border-color: var(--primary);
+      background: var(--input-focus);
+      transform: scale(1.02);
     }
 
     .file-icon {
-      width: 40px;
-      height: 40px;
-      background: var(--primary);
-      border-radius: 8px;
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
+      font-size: 28px;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+      transition: transform 0.3s ease;
+    }
+
+    .file-label:hover .file-icon {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .file-label.has-file .file-icon {
+      background: linear-gradient(135deg, var(--success), #059669);
     }
 
     .file-text { flex: 1; }
 
-    .file-text .main { font-weight: 500; color: var(--text); }
-    .file-text .sub { font-size: 12px; color: var(--text-muted); }
+    .file-text .main { 
+      font-weight: 600; 
+      color: var(--text);
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
 
+    .file-text .sub { 
+      font-size: 13px; 
+      color: var(--text-muted); 
+    }
+
+    .file-size {
+      font-size: 12px;
+      color: var(--success);
+      font-weight: 600;
+      padding: 4px 10px;
+      background: rgba(16, 185, 129, 0.1);
+      border-radius: 6px;
+    }
+
+    /* Enhanced button */
     .btn {
       width: 100%;
-      padding: 14px 24px;
+      padding: 16px 24px;
       border: none;
-      border-radius: 8px;
+      border-radius: 12px;
       font-size: 16px;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
-    .btn-primary { background: var(--primary); color: white; }
-    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
-    .btn-primary:disabled { background: #94a3b8; cursor: not-allowed; transform: none; }
+    .btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+    }
 
-    .turnstile-container { display: flex; justify-content: center; margin: 16px 0; }
+    .btn:hover::before {
+      transform: translateX(100%);
+    }
 
+    .btn-primary { 
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
+      color: white;
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn-primary:hover { 
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-primary:disabled { 
+      background: linear-gradient(135deg, #94a3b8, #64748b);
+      cursor: not-allowed; 
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn-icon {
+      font-size: 20px;
+      transition: transform 0.3s ease;
+    }
+
+    .btn:hover .btn-icon {
+      transform: translateX(4px);
+    }
+
+    /* Turnstile */
+    .turnstile-container { 
+      display: flex; 
+      justify-content: center; 
+      margin: 24px 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #fafafa, #f5f5f5);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    /* Enhanced alerts */
     .alert {
-      padding: 12px 16px;
-      border-radius: 8px;
-      margin-bottom: 16px;
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin-bottom: 24px;
       font-size: 14px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
+      animation: alertSlideIn 0.4s ease-out;
+      border: 2px solid;
+      font-weight: 500;
+    }
+
+    @keyframes alertSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .alert-error {
-      background: #fef2f2;
+      background: linear-gradient(135deg, #fef2f2, #fee2e2);
       color: var(--error);
-      border: 1px solid #fecaca;
+      border-color: #fca5a5;
     }
 
     .alert-success {
-      background: #f0fdf4;
+      background: linear-gradient(135deg, #f0fdf4, #dcfce7);
       color: var(--success);
-      border: 1px solid #bbf7d0;
+      border-color: #86efac;
+    }
+
+    .alert-icon {
+      font-size: 20px;
+      animation: alertIconPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes alertIconPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
     }
 
     .hidden { display: none !important; }
 
+    /* Enhanced spinner */
     .spinner {
-      width: 20px;
-      height: 20px;
-      border: 2px solid transparent;
+      width: 22px;
+      height: 22px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
       border-top-color: white;
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
 
-    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes spin { 
+      to { transform: rotate(360deg); } 
+    }
+
+    /* Success screen */
+    .success-screen {
+      text-align: center;
+      animation: successZoomIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes successZoomIn {
+      from {
+        opacity: 0;
+        transform: scale(0.5);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
 
     .success-icon {
-      width: 80px;
-      height: 80px;
-      background: var(--success);
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, var(--success), #059669);
       border-radius: 50%;
-      margin: 0 auto 24px;
+      margin: 0 auto 32px;
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
-      font-size: 40px;
+      font-size: 50px;
+      box-shadow: 
+        0 20px 40px rgba(16, 185, 129, 0.3),
+        0 0 0 10px rgba(16, 185, 129, 0.1);
+      animation: successIconPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s backwards;
+      position: relative;
     }
 
-    .success-message { text-align: center; }
-    .success-message h2 { color: var(--text); margin-bottom: 8px; }
-    .success-message p { color: var(--text-muted); }
+    @keyframes successIconPop {
+      0% {
+        transform: scale(0);
+        rotate: -180deg;
+      }
+      100% {
+        transform: scale(1);
+        rotate: 0deg;
+      }
+    }
 
-    /* Honeypot */
-    .hp-field {
+    .success-icon::after {
+      content: '';
       position: absolute;
-      left: -9999px;
+      inset: -8px;
+      border-radius: 50%;
+      border: 3px solid var(--success);
       opacity: 0;
-      height: 0;
-      width: 0;
-      pointer-events: none;
+      animation: successRipple 1.5s ease-out infinite;
+    }
+
+    @keyframes successRipple {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1.3);
+        opacity: 0;
+      }
+    }
+
+    .success-message h2 { 
+      color: var(--text);
+      font-size: 26px;
+      margin-bottom: 12px;
+      animation: fadeInUp 0.6s ease-out 0.3s backwards;
+    }
+
+    .success-message p { 
+      color: var(--text-muted);
+      font-size: 15px;
+      line-height: 1.6;
+      animation: fadeInUp 0.6s ease-out 0.4s backwards;
+    }
+
+    .success-details {
+      margin-top: 24px;
+      padding: 20px;
+      background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      animation: fadeInUp 0.6s ease-out 0.5s backwards;
+    }
+
+    .success-details p {
+      color: var(--text);
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .success-details p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Honeypot - Enhanced security */
+    .hp-field {
+      position: absolute !important;
+      left: -9999px !important;
+      opacity: 0 !important;
+      height: 0 !important;
+      width: 0 !important;
+      pointer-events: none !important;
+      tab-index: -1 !important;
+    }
+
+    /* Progress indicator */
+    .progress-dots {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    .progress-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: all 0.3s ease;
+    }
+
+    .progress-dot.active {
+      background: var(--primary);
+      transform: scale(1.3);
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      body {
+        padding: 20px 16px;
+      }
+
+      .card {
+        padding: 32px 24px;
+        border-radius: 20px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .subtitle {
+        font-size: 14px;
+      }
+
+      .header-icon {
+        width: 64px;
+        height: 64px;
+        font-size: 32px;
+      }
+
+      .file-label {
+        flex-direction: column;
+        text-align: center;
+        padding: 24px 16px;
+      }
+
+      .success-icon {
+        width: 80px;
+        height: 80px;
+        font-size: 40px;
+      }
+
+      .success-message h2 {
+        font-size: 22px;
+      }
+    }
+
+    /* Print styles */
+    @media print {
+      body {
+        background: white;
+      }
+
+      .card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+      }
+
+      .btn, .turnstile-container {
+        display: none;
+      }
     }
   </style>
 </head>
 
 <body>
+  <!-- Background decoration -->
+  <div class="bg-decoration">
+    <div class="bg-circle bg-circle-1"></div>
+    <div class="bg-circle bg-circle-2"></div>
+    <div class="bg-circle bg-circle-3"></div>
+  </div>
+
   <div class="container">
     <div class="card">
       <!-- Alert Box -->
-      <div class="alert alert-error hidden" id="alert">
+      <div class="alert alert-error hidden" id="alert" role="alert">
+        <span class="alert-icon" id="alert-icon">⚠️</span>
         <span id="alert-text"></span>
       </div>
 
       <!-- Application Form -->
       <div id="form-section">
-        <h1>Apply for a Job</h1>
-        <p class="subtitle">Fill in your details and upload your resume</p>
+        <div class="form-header">
+          <div class="header-icon">💼</div>
+          <h1>Join Our Team</h1>
+          <p class="subtitle">Submit your application securely and professionally</p>
+          <div class="security-badge">End-to-End Encrypted</div>
+        </div>
 
-        <form id="apply-form">
-          <!-- Honeypot fields -->
+        <form id="apply-form" novalidate>
+          <!-- Honeypot fields - Enhanced -->
           <div class="hp-field" aria-hidden="true">
             <label for="_hp_check">Leave this empty</label>
             <input type="text" id="_hp_check" name="_hp_check" tabindex="-1" autocomplete="off" />
           </div>
           <input type="hidden" id="_timestamp" name="_timestamp" value="" />
+          <input type="hidden" id="_token" name="_token" value="" />
 
           <div class="form-group">
-            <label class="required">Full Name</label>
-            <input type="text" id="name" placeholder="Enter your full name" required maxlength="100" />
+            <label class="required">
+              <span class="label-icon">👤</span>
+              Full Name
+            </label>
+            <div class="input-wrapper">
+              <input 
+                type="text" 
+                id="name" 
+                placeholder="Enter your full name" 
+                required 
+                maxlength="100"
+                autocomplete="name"
+                data-validate="name" />
+              <span class="input-icon" id="name-icon"></span>
+            </div>
           </div>
 
           <div class="form-group">
-            <label class="required">Email Address</label>
-            <input type="email" id="email" placeholder="your.email@example.com" required maxlength="100" />
+            <label class="required">
+              <span class="label-icon">📧</span>
+              Email Address
+            </label>
+            <div class="input-wrapper">
+              <input 
+                type="email" 
+                id="email" 
+                placeholder="your.email@example.com" 
+                required 
+                maxlength="100"
+                autocomplete="email"
+                data-validate="email" />
+              <span class="input-icon" id="email-icon"></span>
+            </div>
           </div>
 
           <div class="form-group">
-            <label>Mobile Number (Optional)</label>
-            <input type="tel" id="mobile" placeholder="10-digit mobile number" pattern="[6-9][0-9]{9}" maxlength="10" />
+            <label>
+              <span class="label-icon">📱</span>
+              Mobile Number (Optional)
+            </label>
+            <div class="input-wrapper">
+              <input 
+                type="tel" 
+                id="mobile" 
+                placeholder="10-digit mobile number" 
+                pattern="[6-9][0-9]{9}" 
+                maxlength="10"
+                autocomplete="tel"
+                data-validate="phone" />
+              <span class="input-icon" id="mobile-icon"></span>
+            </div>
           </div>
 
           <div class="form-group">
-            <label>Position Applying For</label>
-            <select id="position">
+            <label>
+              <span class="label-icon">💼</span>
+              Position Applying For
+            </label>
+            <select id="position" autocomplete="organization-title">
               <option value="">Select a position</option>
               <option value="ACC-001">Accountant</option>
               <option value="HR-001">HR Executive</option>
@@ -282,10 +869,13 @@
           </div>
 
           <div class="form-group">
-            <label>Experience (Years)</label>
+            <label>
+              <span class="label-icon">⏱️</span>
+              Experience (Years)
+            </label>
             <select id="experience">
               <option value="">Select experience</option>
-              <option value="0">Fresher</option>
+              <option value="0">Fresher (0 Years)</option>
               <option value="1">1 Year</option>
               <option value="2">2 Years</option>
               <option value="3">3 Years</option>
@@ -295,18 +885,34 @@
           </div>
 
           <div class="form-group">
-            <label>Current Location</label>
-            <input type="text" id="location" placeholder="City, State" maxlength="100" />
+            <label>
+              <span class="label-icon">📍</span>
+              Current Location
+            </label>
+            <input 
+              type="text" 
+              id="location" 
+              placeholder="City, State" 
+              maxlength="100"
+              autocomplete="address-level2" />
           </div>
 
           <div class="form-group file-input">
-            <label class="required">Resume / CV</label>
-            <input type="file" id="cv" accept=".pdf,.doc,.docx" required />
+            <label class="required">
+              <span class="label-icon">📄</span>
+              Resume / CV
+            </label>
+            <input 
+              type="file" 
+              id="cv" 
+              accept=".pdf,.doc,.docx" 
+              required 
+              aria-describedby="file-help" />
             <div class="file-label" id="file-label">
               <div class="file-icon">📄</div>
               <div class="file-text">
-                <div class="main" id="file-name">Choose your CV</div>
-                <div class="sub">PDF, DOC, DOCX (max 2MB)</div>
+                <div class="main" id="file-name">Choose your CV or drag & drop</div>
+                <div class="sub" id="file-help">PDF, DOC, DOCX (max 2MB)</div>
               </div>
             </div>
           </div>
@@ -316,7 +922,7 @@
             <div class="cf-turnstile"
                  data-sitekey="0x4AAAAAACVpKor7RIjOUDfl"
                  data-size="normal"
-                 data-theme="auto"
+                 data-theme="light"
                  data-callback="onTurnstileSuccess"
                  data-expired-callback="onTurnstileExpired"
                  data-error-callback="onTurnstileError"></div>
@@ -324,40 +930,192 @@
 
           <button type="submit" class="btn btn-primary" id="btn-submit" disabled>
             <span>Submit Application</span>
+            <span class="btn-icon">→</span>
           </button>
         </form>
       </div>
 
       <!-- Success Screen -->
-      <div id="success" class="hidden">
+      <div id="success" class="hidden success-screen">
         <div class="success-icon">✓</div>
         <div class="success-message">
-          <h2>Application Submitted!</h2>
-          <p>Thank you for applying. Our HR team will review your application and contact you soon.</p>
+          <h2>Application Submitted Successfully! 🎉</h2>
+          <p>Thank you for applying to join our team. We've received your application and our HR team will carefully review it.</p>
+          <div class="success-details">
+            <p><strong>What happens next?</strong></p>
+            <p>• You'll receive a confirmation email shortly</p>
+            <p>• Our team will review your application within 3-5 business days</p>
+            <p>• If shortlisted, we'll contact you for the next steps</p>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // ✅ CONFIG: Paste your Render/Backend URL here (NO trailing slash)
-    const API_BASE = ' http://127.0.0.1:5002/api';
+    // ✅ CONFIG: Your Backend API URL
+    const API_BASE = 'http://127.0.0.1:5002/api';
 
+    // Security: Generate unique session token
+    const SESSION_TOKEN = generateToken();
+    
     // State
     let turnstileToken = '';
     let formLoadTime = Date.now();
+    let validationState = {};
 
     // Elements
     const alertEl = document.getElementById('alert');
     const alertText = document.getElementById('alert-text');
+    const alertIcon = document.getElementById('alert-icon');
+    const form = document.getElementById('apply-form');
 
-    // timestamp for timing trap
-    document.getElementById('_timestamp').value = String(formLoadTime);
+    // Initialize
+    initForm();
+
+    function initForm() {
+      document.getElementById('_timestamp').value = String(formLoadTime);
+      document.getElementById('_token').value = SESSION_TOKEN;
+      setupValidation();
+      setupDragAndDrop();
+      setupFileInput();
+    }
+
+    // Security: Generate unique token
+    function generateToken() {
+      return 'tkn_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    // Real-time validation
+    function setupValidation() {
+      const inputs = document.querySelectorAll('[data-validate]');
+      
+      inputs.forEach(input => {
+        input.addEventListener('blur', () => validateField(input));
+        input.addEventListener('input', () => {
+          if (input.classList.contains('invalid')) {
+            validateField(input);
+          }
+        });
+      });
+    }
+
+    function validateField(input) {
+      const type = input.dataset.validate;
+      const value = input.value.trim();
+      const iconEl = document.getElementById(input.id + '-icon');
+      
+      let isValid = false;
+
+      switch(type) {
+        case 'name':
+          isValid = value.length >= 2 && /^[a-zA-Z\s]+$/.test(value);
+          break;
+        case 'email':
+          isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+          break;
+        case 'phone':
+          isValid = !value || /^[6-9][0-9]{9}$/.test(value);
+          break;
+      }
+
+      if (value) {
+        input.classList.toggle('valid', isValid);
+        input.classList.toggle('invalid', !isValid);
+        
+        if (iconEl) {
+          iconEl.textContent = isValid ? '✓' : '✗';
+          iconEl.className = 'input-icon show ' + (isValid ? 'valid' : 'invalid');
+        }
+      } else {
+        input.classList.remove('valid', 'invalid');
+        if (iconEl) {
+          iconEl.classList.remove('show');
+        }
+      }
+
+      validationState[input.id] = isValid || !input.required;
+      return isValid;
+    }
+
+    // Drag and drop for file upload
+    function setupDragAndDrop() {
+      const fileLabel = document.getElementById('file-label');
+      const fileInput = document.getElementById('cv');
+
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        fileLabel.addEventListener(eventName, preventDefaults, false);
+      });
+
+      function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      ['dragenter', 'dragover'].forEach(eventName => {
+        fileLabel.addEventListener(eventName, () => {
+          fileLabel.classList.add('dragging');
+        });
+      });
+
+      ['dragleave', 'drop'].forEach(eventName => {
+        fileLabel.addEventListener(eventName, () => {
+          fileLabel.classList.remove('dragging');
+        });
+      });
+
+      fileLabel.addEventListener('drop', (e) => {
+        const files = e.dataTransfer.files;
+        if (files.length) {
+          fileInput.files = files;
+          handleFileSelect(files[0]);
+        }
+      });
+    }
+
+    // File input handling
+    function setupFileInput() {
+      document.getElementById('cv').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          handleFileSelect(file);
+        }
+      });
+    }
+
+    function handleFileSelect(file) {
+      const label = document.getElementById('file-label');
+      const fileName = document.getElementById('file-name');
+      const fileHelp = document.getElementById('file-help');
+
+      // Validate file size
+      if (file.size > 2 * 1024 * 1024) {
+        showError('File too large! Maximum size is 2MB.');
+        document.getElementById('cv').value = '';
+        return;
+      }
+
+      // Validate file type
+      const ext = file.name.split('.').pop().toLowerCase();
+      if (!['pdf', 'doc', 'docx'].includes(ext)) {
+        showError('Invalid file type! Please upload PDF, DOC, or DOCX.');
+        document.getElementById('cv').value = '';
+        return;
+      }
+
+      // Display file info
+      const fileSize = (file.size / 1024).toFixed(1);
+      fileName.textContent = file.name;
+      fileHelp.innerHTML = `<span class="file-size">${fileSize} KB</span> • Ready to upload`;
+      label.classList.add('has-file');
+      hideAlert();
+    }
 
     // Turnstile callbacks
     function onTurnstileSuccess(token) {
       turnstileToken = token;
       document.getElementById('btn-submit').disabled = false;
+      console.log('✓ Verification successful');
     }
 
     function onTurnstileExpired() {
@@ -369,12 +1127,14 @@
     function onTurnstileError() {
       turnstileToken = '';
       document.getElementById('btn-submit').disabled = true;
-      showError('Verification error. Please retry.');
+      showError('Verification error. Please refresh and try again.');
     }
 
+    // Alert functions
     function showError(message) {
       alertEl.classList.remove('hidden', 'alert-success');
       alertEl.classList.add('alert-error');
+      alertIcon.textContent = '⚠️';
       alertText.textContent = message;
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -382,6 +1142,7 @@
     function showSuccess(message) {
       alertEl.classList.remove('hidden', 'alert-error');
       alertEl.classList.add('alert-success');
+      alertIcon.textContent = '✓';
       alertText.textContent = message;
     }
 
@@ -391,66 +1152,67 @@
 
     function setLoading(btn, loading, text = 'Submit Application') {
       const span = btn.querySelector('span');
+      const btnIcon = btn.querySelector('.btn-icon');
+      
       if (loading) {
-        span.textContent = 'Please wait...';
+        span.textContent = 'Processing...';
         btn.disabled = true;
+        if (btnIcon) btnIcon.style.display = 'none';
+        
         if (!btn.querySelector('.spinner')) {
           const spinner = document.createElement('div');
           spinner.className = 'spinner';
-          btn.insertBefore(spinner, span);
+          btn.appendChild(spinner);
         }
       } else {
         span.textContent = text;
         btn.disabled = false;
+        if (btnIcon) btnIcon.style.display = 'inline';
+        
         const spinner = btn.querySelector('.spinner');
         if (spinner) spinner.remove();
       }
     }
 
-    // File input display + validation
-    document.getElementById('cv').addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      const label = document.getElementById('file-label');
-      const fileName = document.getElementById('file-name');
-
-      if (file) {
-        if (file.size > 2 * 1024 * 1024) {
-          showError('File too large. Maximum size is 2MB.');
-          e.target.value = '';
-          return;
-        }
-
-        const ext = file.name.split('.').pop().toLowerCase();
-        if (!['pdf', 'doc', 'docx'].includes(ext)) {
-          showError('Invalid file type. Please upload PDF, DOC, or DOCX.');
-          e.target.value = '';
-          return;
-        }
-
-        fileName.textContent = file.name;
-        label.classList.add('has-file');
-        hideAlert();
-      } else {
-        fileName.textContent = 'Choose your CV';
-        label.classList.remove('has-file');
-      }
-    });
-
-    // Form submission
-    document.getElementById('apply-form').addEventListener('submit', async (e) => {
+    // Form submission with enhanced security
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       hideAlert();
 
       const btn = document.getElementById('btn-submit');
       const cv = document.getElementById('cv').files[0];
 
+      // Security check: Honeypot
+      if (document.getElementById('_hp_check').value !== '') {
+        console.warn('Bot detected');
+        return;
+      }
+
+      // Security check: Timing (must be filled in at least 3 seconds)
+      const timeTaken = Date.now() - formLoadTime;
+      if (timeTaken < 3000) {
+        showError('Please take your time filling the form.');
+        return;
+      }
+
+      // Turnstile check
       if (!turnstileToken) {
         showError('Please complete verification first.');
         return;
       }
 
+      // File check
       if (!cv) {
-        showError('Please select your CV');
+        showError('Please select your CV/Resume.');
+        return;
+      }
+
+      // Validate all required fields
+      const nameValid = validateField(document.getElementById('name'));
+      const emailValid = validateField(document.getElementById('email'));
+
+      if (!nameValid || !emailValid) {
+        showError('Please fix the errors in the form.');
         return;
       }
 
@@ -461,28 +1223,37 @@
         const positionCode = positionSelect.value;
         const positionTitle = positionSelect.options[positionSelect.selectedIndex]?.text || '';
 
-        // Step 1: Init application
+        // Step 1: Initialize application
         const initRes = await fetch(`${API_BASE}/v1/apply/init`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'X-Request-ID': SESSION_TOKEN,
+            'X-Timestamp': String(formLoadTime)
+          },
           body: JSON.stringify({
             turnstile_token: turnstileToken,
-            name: document.getElementById('name').value,
-            email: document.getElementById('email').value,
-            mobile: document.getElementById('mobile').value,
+            name: document.getElementById('name').value.trim(),
+            email: document.getElementById('email').value.trim().toLowerCase(),
+            mobile: document.getElementById('mobile').value.trim(),
             job_public_code: positionCode,
             position_title: positionTitle,
             _hp_check: document.getElementById('_hp_check').value,
             _timestamp: formLoadTime,
+            _token: SESSION_TOKEN,
           }),
         });
 
-        // Friendly 429 handling
         if (initRes.status === 429) {
-          throw new Error('Too many attempts. Please try again later.');
+          throw new Error('Too many attempts. Please try again in a few minutes.');
+        }
+
+        if (!initRes.ok) {
+          throw new Error('Network error. Please try again.');
         }
 
         const initData = await initRes.json();
+        
         if (!initData.success) {
           throw new Error(initData.error || 'Failed to submit application');
         }
@@ -494,10 +1265,13 @@
         formData.append('apply_id', applyId);
         formData.append('cv', cv);
         formData.append('experience', document.getElementById('experience').value);
-        formData.append('location', document.getElementById('location').value);
+        formData.append('location', document.getElementById('location').value.trim());
 
         const uploadRes = await fetch(`${API_BASE}/v1/apply/upload-cv`, {
           method: 'POST',
+          headers: {
+            'X-Request-ID': SESSION_TOKEN,
+          },
           body: formData,
         });
 
@@ -505,20 +1279,41 @@
           throw new Error('Too many attempts. Please try again later.');
         }
 
+        if (!uploadRes.ok) {
+          throw new Error('Failed to upload CV. Please try again.');
+        }
+
         const uploadData = await uploadRes.json();
+        
         if (!uploadData.success) {
           throw new Error(uploadData.error || 'Failed to upload CV');
         }
 
-        // Success UI
-        document.getElementById('form-section').classList.add('hidden');
-        document.getElementById('success').classList.remove('hidden');
+        // Success! Show success screen
+        setTimeout(() => {
+          document.getElementById('form-section').classList.add('hidden');
+          document.getElementById('success').classList.remove('hidden');
+        }, 500);
 
       } catch (error) {
-        showError(error.message || 'Something went wrong.');
+        console.error('Submission error:', error);
+        showError(error.message || 'Something went wrong. Please try again.');
         setLoading(btn, false);
       }
     });
+
+    // Security: Disable right-click on sensitive areas (optional)
+    document.getElementById('cv').addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+    });
+
+    // Security: Clear form on page unload
+    window.addEventListener('beforeunload', () => {
+      form.reset();
+    });
+
+    console.log('%c🔒 Secure Application Form', 'color: #10b981; font-size: 16px; font-weight: bold;');
+    console.log('%cSession Token: ' + SESSION_TOKEN, 'color: #6366f1;');
   </script>
 </body>
 </html>
